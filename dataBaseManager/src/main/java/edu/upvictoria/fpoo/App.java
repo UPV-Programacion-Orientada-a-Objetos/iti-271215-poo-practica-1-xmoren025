@@ -10,37 +10,19 @@ public class App {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         try {
-
-            //("/home/xmoreno/iti-271215-poo-practica-1-xmoren025/dataBaseManager/src/main/java/edu/upvictoria/fpoo/$PATH$");
-            System.out.println("Ingrese el comando << USE $PATH$ >> para ingresar a la base de datos:");
-            String entrada = br.readLine().trim();
-            if (entrada.toUpperCase().startsWith("USE")) {
-                dbManager.use(entrada);
-                while(true){
-                    System.out.println("Ingrese una consulta SQL (o 'exit' para salir:)");
-                    entrada = br.readLine().trim();
-
-                    if (entrada.equalsIgnoreCase("exit")){
-                        break;
-                    }
-
-                    //Identificar el comando
-
-
-
-                }
-            }
-
-
-
-        } catch(IOException e){
-            System.out.println("Error al leer la entrada del usuario:" +e.getMessage());
-
-        }catch (IllegalArgumentException e) {
+            System.out.println("Ingrese consultas SQL (o 'exit' para salir):");
+            String entrada;
+            do {
+                System.out.print(">");
+                entrada = br.readLine().trim();
+                dbManager.procesarEntrada(entrada);
+            } while (!"exit".equals(entrada));
+        } catch (IOException e) {
+            System.out.println("Error al leer la entrada del usuario: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
             System.out.println("Error al establecer la ruta de trabajo: " + e.getMessage());
+        } catch (SQLSintaxisException | NoTablesException e) {
+            System.out.println("Error en la consulta SQL: " + e.getMessage());
         }
-
     }
 }
-
-
