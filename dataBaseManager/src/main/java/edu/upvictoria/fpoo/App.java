@@ -11,12 +11,10 @@ public class App {
 
         try {
             System.out.println("Ingrese consultas SQL (o 'exit' para salir):");
-            String entrada;
-            do {
-                System.out.print(">");
-                entrada = br.readLine().trim();
-                dbManager.procesarEntrada(entrada);
-            } while (!"exit".equals(entrada));
+            System.out.print(">");
+            String entrada = br.readLine().trim();
+            dbManager.procesarEntrada(entrada);
+
         } catch (IOException e) {
             System.out.println("Error al leer la entrada del usuario: " + e.getMessage());
         } catch (IllegalArgumentException e) {

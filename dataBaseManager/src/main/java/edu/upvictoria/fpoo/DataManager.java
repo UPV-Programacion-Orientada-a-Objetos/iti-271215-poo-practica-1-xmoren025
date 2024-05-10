@@ -14,7 +14,7 @@ public class DataManager {
 
     public void procesarEntrada(String entrada) throws SQLSintaxisException, NoTablesException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
-            while (!(entrada = br.readLine().trim()).equalsIgnoreCase("exit")) {
+            do {
                 if (entrada.toUpperCase().startsWith("USE")) {
                     String[] parts = entrada.split("\\s+");
                     if (parts.length != 2) {
@@ -22,10 +22,10 @@ public class DataManager {
                     }
                     String path = parts[1].trim();
                     use(path); // Llama al método use() para establecer la ruta de trabajo
-                } else if (path.isEmpty()) {
+                } else if (this.path.isEmpty()) {
                     System.out.println("Debe determinar una ruta de trabajo antes de hacer uso de la base de datos.");
                 } else if (entrada.toUpperCase().startsWith("SHOW TABLES")) {
-                    showTables();
+                    showTables(directory);
                 } else if (entrada.toUpperCase().startsWith("CREATE TABLE")) {
                     createTable(entrada);
                 } else if (entrada.toUpperCase().startsWith("DROP TABLE")) {
@@ -41,33 +41,30 @@ public class DataManager {
                 } else {
                     System.out.println("No se reconoce el comando.");
                 }
-            }
+            } while (!(entrada = br.readLine().trim()).equalsIgnoreCase("exit"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     //USE
-    public void use(String query) throws SQLSintaxisException {
-        query = query.trim();
-        if (!path.isEmpty()) {
+    public void use(String path) throws SQLSintaxisException {
+        if (!this.path.isEmpty()) {
             System.err.println("La base de datos ya fue seleccionada previamente");
             return;
         }
-        String carpetaStr = query.substring(3).trim();
-        if (carpetaStr.isEmpty()) {
+
+        if (path.isEmpty()) {
             throw new SQLSintaxisException();
         }
-        path = carpetaStr;
-        if (path.endsWith(" ")) {
-            path = path.substring(0, path.length() - 1).trim();
-        }
-        directory = new File(path);
+
+        this.path = path;
+        directory = new File(this.path);
         if (directory.isDirectory()) {
             System.out.println("Base de datos seleccionada exitosamente.");
         } else {
             System.err.println("La base de datos no existe o no es un directorio.");
-            path = "";
+            this.path = "";
         }
     }
 
@@ -112,19 +109,23 @@ public class DataManager {
 
 
     //SHOW TABLES
-    public void showTables() throws NoTablesException{
-        List<String> tableNames = new ArrayList<>();
+    public void showTables(File directory) throws NoTablesException {
+        if (directory == null) {
+            throw new NoTablesException();
+        }
+
         System.out.println("Tablas en la Base de Datos:");
-        File[] tablas = directory.listFiles();
-        if (tablas !=null){
-            for (File tabla :tablas){
-                if(tabla.isFile() && tabla.getName().endsWith(".csv")){
-                    String tableName = tabla.getName().substring(0,tabla.getName().length()-4);
-                    tableNames.add(tableName);
+        String[] archivos = directory.list();
+
+        if (archivos != null) {
+            for (String archivo : archivos) {
+                if (archivo.endsWith(".csv")) {
+                    String tableName = archivo.substring(0, archivo.length() - 4);
                     System.out.println(tableName);
                 }
             }
-            if (tableNames.isEmpty()){
+
+            if (archivos.length == 0) {
                 throw new NoTablesException();
             }
         } else {
