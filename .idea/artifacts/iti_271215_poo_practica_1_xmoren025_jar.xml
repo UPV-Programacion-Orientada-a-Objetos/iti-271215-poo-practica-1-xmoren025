@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="iti-271215-poo-practica-1-xmoren025:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/iti_271215_poo_practica_1_xmoren025_jar</output-path>
+    <root id="archive" name="iti-271215-poo-practica-1-xmoren025.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="dataBaseManager" />
+    </root>
+  </artifact>
+</component>
