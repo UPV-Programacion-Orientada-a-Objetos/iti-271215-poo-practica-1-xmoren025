@@ -8,13 +8,13 @@ public class App {
     public static void main(String[] args) {
         DataManager dbManager = new DataManager();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
+        System.out.println("Ingrese consultas SQL (o 'exit' para salir):");
         try {
-            System.out.println("Ingrese consultas SQL (o 'exit' para salir):");
-            System.out.print(">");
-            String entrada = br.readLine().trim();
-            dbManager.procesarEntrada(entrada);
-
+            String entrada;
+            do {
+                entrada = readInput();
+                dbManager.procesarEntrada(entrada);
+            } while (!entrada.equalsIgnoreCase("exit"));
         } catch (IOException e) {
             System.out.println("Error al leer la entrada del usuario: " + e.getMessage());
         } catch (IllegalArgumentException e) {
@@ -22,5 +22,11 @@ public class App {
         } catch (SQLSintaxisException | NoTablesException e) {
             System.out.println("Error en la consulta SQL: " + e.getMessage());
         }
+    }
+
+    private static String readInput() throws IOException {
+        System.out.print(">");
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        return br.readLine().trim();
     }
 }
